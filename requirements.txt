@@ -1,0 +1,4 @@
+numpy
+plotly
+streamlit
+time
