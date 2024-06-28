@@ -94,7 +94,10 @@ def animation_plot(display_not_save_images):
        plt.pause(0.0001)
     else:
         plt.savefig("./pngs/ff"+str(int(1000000+tstep)).zfill(4)+".png")
-#    
+#
+        filename="./data/vort"+str(int(1000000+tstep)).zfill(4)+".npz" 
+        print('\n','saving to ',filename)
+        np.savez_compressed(filename,vorticity=vorticity,Re=Re,time=tstep/T_d,allow_pickle=True)
     return
 
 # time run
@@ -103,7 +106,7 @@ tstart = time.time()
  
 # lattice size, flow is along x axis, periodic boundary conditions along y
 nx = 460
-ny = 140
+ny = 180
 print('nx,  ny ',nx,ny)
 r=20
 print('radius of discs in lattice units ',round(r,2))
@@ -220,7 +223,7 @@ axs.set_aspect('equal')
 # rescaling window alters images saved which if done during run can mess up
 # movie made from theses images
 display_not_save_images=True
-#display_not_save_images=False
+display_not_save_images=False
 ##
 # set LHS BC
 y=np.linspace(0,ny,ny)
