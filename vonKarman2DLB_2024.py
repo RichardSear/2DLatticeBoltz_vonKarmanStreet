@@ -19,6 +19,7 @@ which also applies to this code:
 import numpy as np
 import time
 import matplotlib.pyplot as plt
+import os
 
 '''
 define some functions ....
@@ -41,10 +42,6 @@ def equilibrium(rho,u):
 set up obstacle(s)
 """
 def obstacle_def(r):
-# cylinder centre at
-    x0=nx/5
-    y0=ny/2#+15
-    print('cylinder at ',round(x0,2),round(y0,2))
 ##### now set True/False array for inside/outside disc
     inside_obs=np.zeros((nx,ny),dtype=bool)
     binary_obs=np.zeros((nx,ny))#,dtype=int)
@@ -93,11 +90,20 @@ def animation_plot(display_not_save_images):
     if(display_not_save_images):
        plt.pause(0.0001)
     else:
-        plt.savefig("./pngs/ff"+str(int(1000000+tstep)).zfill(4)+".png")
-#
-        filename="./data/vort"+str(int(1000000+tstep)).zfill(4)+".npz" 
-        print('\n','saving to ',filename)
-        np.savez_compressed(filename,vorticity=vorticity,Re=Re,time=tstep/T_d,allow_pickle=True)
+# assumes there is a directory called pngs already in directory this code runs in
+        directory = 'pngs'
+        file_name = "ff"+str(int(1000000+tstep)).zfill(4)+".png"
+        file_path = os.path.join(directory, file_name)
+        print('saving png to',file_path)
+        plt.savefig(file_path)
+# assumes there is a directory called data already in directory this code runs in
+        directory = 'data'
+        file_name="uvort"+str(int(1000000+tstep)).zfill(4)+".npz"
+        file_path = os.path.join(directory, file_name)
+        print('saving to ',file_path)
+        np.savez_compressed(file_path,u=u,vorticity=vorticity, \
+                            x0=x0,y0=y0,r=r,Re=Re,time=tstep/T_d,allow_pickle=True)
+        print('\n')
     return
 
 # time run
@@ -105,10 +111,15 @@ tstart = time.time()
 
  
 # lattice size, flow is along x axis, periodic boundary conditions along y
-nx = 460
-ny = 180
+nx = 250
+ny = 140
 print('nx,  ny ',nx,ny)
-r=20
+# cylinder centre at
+x0=nx/5
+y0=ny/2#+15
+print('cylinder centre at ',round(x0,2),round(y0,2))
+# cylinder radius
+r=12
 print('radius of discs in lattice units ',round(r,2))
 # works by setting desired Reynolds number, Re, then (below) setting kinematic viscosity
 # to give this value of Re, at flow speed that is small, LB simulations are only stable
